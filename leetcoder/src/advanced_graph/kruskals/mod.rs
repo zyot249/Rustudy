@@ -1,29 +1,46 @@
 mod disjoint_sets;
 mod graph;
 
+use disjoint_sets::DisjointSets;
 use graph::{Edge, Graph};
 
-fn kruskal(graph :Graph) {
-    let mut result :Vec<Edge> = vec![];
-
-    let mut edges = graph.edges.clone();
-    edges.sort_by_key(|a| a.weight);
-
-    let v = graph.vertices;
-    let mut idx :usize = 0;
-    while result.len() < v - 1 {
-        let next_edge = edges[idx];
-        idx += 1;
-        result.push(next_edge);
-
-        let g = Graph::new_with_edges(v, &result);
-        if g.is_cycle() {
-            result.pop();
+impl Graph {
+    /// Finds the Minimum Spanning Tree using Kruskal's algorithm
+    /// Returns Result containing either the MST edges or an error
+    pub fn kruskal(&self) -> Result<Vec<Edge>, &'static str> {
+        if self.vertices == 0 {
+            return Err("Graph must have at least one vertex");
         }
-    }
 
-    for edge in result.iter() {
-        println!("{} - {} : {}", edge.src, edge.dest, edge.weight);
+        let mut mst_edges: Vec<Edge> = Vec::new();
+        let mut sorted_edges = self.edges.clone();
+        sorted_edges.sort_by_key(|edge| edge.weight);
+
+        let mut disjoint_sets = DisjointSets::new(self.vertices);
+
+        // Process edges in ascending order of weight
+        for edge in sorted_edges {
+            let src_parent = disjoint_sets.find(edge.src);
+            let dest_parent = disjoint_sets.find(edge.dest);
+
+            // Add edge if it doesn't create a cycle
+            if src_parent != dest_parent {
+                disjoint_sets.union(edge.src, edge.dest);
+                mst_edges.push(edge);
+            }
+
+            // Early exit if we have enough edges for MST
+            if mst_edges.len() == self.vertices - 1 {
+                break;
+            }
+        }
+
+        // Check if we found a valid MST
+        if mst_edges.len() != self.vertices - 1 {
+            return Err("Graph is not connected - no valid MST exists");
+        }
+
+        Ok(mst_edges)
     }
 }
 
@@ -40,6 +57,11 @@ mod tests {
         graph.add_edge(1, 3, 15);
         graph.add_edge(2, 3, 4);
 
-        kruskal(graph);
+        let result = graph.kruskal();
+        assert!(result.is_ok());
+        let mst_edges = result.unwrap();
+        for edge in mst_edges.iter() {
+            println!("{} - {} : {}", edge.src, edge.dest, edge.weight);
+        }
     }
 }
