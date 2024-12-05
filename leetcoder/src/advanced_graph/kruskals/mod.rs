@@ -1,8 +1,7 @@
-mod disjoint_sets;
-mod graph;
-
-use disjoint_sets::DisjointSets;
-use graph::{Edge, Graph};
+use super::graph_struct::{
+    disjoint_sets::DisjointSets,
+    graph::{Edge, Graph},
+};
 
 impl Graph {
     /// Finds the Minimum Spanning Tree using Kruskal's algorithm
