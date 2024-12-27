@@ -1,3 +1,7 @@
+/*
+Problem: https://www.geeksforgeeks.org/0-1-knapsack-problem-dp-10/
+*/
+
 fn recursion_solution(weight: Vec<i32>, profit: Vec<i32>, w: i32) -> i32 {
     fn backtrack(weight: &Vec<i32>, profit: &Vec<i32>, w: i32, n: usize) -> i32 {
         if n == 0 || w == 0 {
