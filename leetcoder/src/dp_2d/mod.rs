@@ -1,3 +1,4 @@
+mod distinct_subsequences;
 mod interleaving_string;
 mod target_sum;
 mod coin_change_ii;
