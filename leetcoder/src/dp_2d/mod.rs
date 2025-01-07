@@ -1,3 +1,4 @@
+mod edit_distance;
 mod distinct_subsequences;
 mod interleaving_string;
 mod target_sum;
