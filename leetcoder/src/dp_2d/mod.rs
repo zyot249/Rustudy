@@ -1,3 +1,4 @@
+mod burst_balloons;
 mod edit_distance;
 mod distinct_subsequences;
 mod interleaving_string;
